@@ -56,7 +56,7 @@ curr_ingreds = st.text_input(
     'Enter your ingredients in comma-seperated format:')
 
 # if t
-curr_ingreds = pd.Series(curr_ingreds.lower().split(", "))
+curr_ingreds = curr_ingreds.lower().replace(' ', '').split(",")
 
 found_count = 0
 found = np.array([])
@@ -65,18 +65,18 @@ not_found = np.array([])
 # breakdown on what ingredients were found and which were not
 for ingredient in curr_ingreds:
     found_base = ingredient in ingredients['ingredient'].unique()
-    found_alt = ingredients['other_names'].str.contains(
-        ingredient).fillna(False)
-    if (found_base or any(found_alt)):
-        if found_base:
-            found = np.append(found, ingredient)
-        else:
-            found = np.append(
-                found, ingredients[found_alt]['ingredient'].iloc[0])
+    found_alt = (ingredients['other_names'] == ingredient).fillna(False)
+    
+    if found_base:
+        found = np.append(found, ingredient)
+        found_count += 1
+    elif any(found_alt):
+        found = np.append(
+            found, ingredients[found_alt]['ingredient'].iloc[0])
         found_count += 1
     else:
         not_found = np.append(not_found, ingredient)
-
+#st.write(found)
 if len(curr_ingreds) > 1:
     st.write(
         f' **{found_count} ingredients** were found to have significant information:')
@@ -120,7 +120,6 @@ info_placeholder = st.empty()
 
 # get all of the found ingredients so we can use for further analysis
 ingred_info_df = ingredients[ingredients['ingredient'].isin(found)]
-
 # breakdown of ingredients by benefits
 if butt_1:
 
@@ -150,6 +149,8 @@ if butt_1:
             '**select a skin type from the selection above to compare how this product may affect your skin**')
     else:
         st.write('##### How Does This Compare to Your Skin Type?')
+        if skin_type == 'Normal':
+            st.write('Normal have known issues, however, look at benefits that could help your skion')
         if skin_type == 'Dry':
             # For dry skin, look for ingredients that promote **hydration** and **nourishment**.
             st.markdown('''Here\'s how these ingredients may affect dry skin:            
@@ -362,7 +363,10 @@ if butt_1:
             else:
                 st.write('4. This product does not contain ingredients that may even your skin tone. If you find that uneven skin tones are a result of your sensitive skin, then you ***may*** benefit from ingredients that even out your skin tone.')
 if butt_2:
-    st.write('#### What Are The Ingredients\' Background?')
+    if len(options) != 0:
+        st.write('#### What Are The Ingredients\' Background?')
+    else:
+        st.write('Please select what you care about in your cosmetic products')
     if 'Cruelty-Free/Vegan' in options:
         st.write('##### Cruelty-Free/Vegan Ingredient Breakdown:')
         yes = (ingred_info_df.is_vegan_friendly.value_counts(
@@ -451,9 +455,12 @@ if butt_2:
             st.write('___________________________________________________________________')
 
 if butt_3:
-    st.write('#### What Ingredients Appear to Have?')
+    st.write('#### What Ingredients Appear to Have Risks?')
     yuh = ingred_info_df[ingred_info_df.web.notna()]
-    st.write('##### Ingredient Proposed Risks According to Online Resources:')
+    if yuh.shape[0] > 0:
+        st.write('##### Ingredient Proposed Risks According to Online Resources:')
+    else:
+        st.write('No ingredients were found to have proposed risks')
     for i in range(len(yuh)):
         st.write(f'###### **{yuh.ingredient.iloc[i]}**')
         
@@ -477,7 +484,9 @@ if butt_4:
                 merged_dict[key] += value
             else:
                 merged_dict[key] = value
-    st.write('##### What Are The Ingredients\' Functions?')
+    if len(ingred_info_df['function'].dropna(
+    )) > 0:
+        st.write('##### What Are The Ingredients\' Functions?')
     for (key, value) in merged_dict.items():
         ingred_list = ingred_info_df[ingred_info_df['function'].fillna(
             'None').str.contains(key)]['ingredient']
@@ -486,4 +495,4 @@ if butt_4:
         ''')
         st.write("____")
 
-# st.write(", ".join(np.array([_ for _ in dry if _ in found])))
+
