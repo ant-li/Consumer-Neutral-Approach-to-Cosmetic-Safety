@@ -39,7 +39,7 @@ if skin_type == 'Dry':
 elif skin_type == 'Sensitive':
     st.write('Sensitive skin type **can be any of the other skin types** but can be prone to **burning-sensations, itchiness, or dryness**. This means that certain ingredients and products can cause unwanted reactions. If you react poorly to a lot of cosmetic products, your skin may also be sensitive.')
 elif skin_type == 'Normal':
-    st.write('Normal skin type is neither dry or oily and pertains to a well balanced skin type. That means you won\'t run into many issues like other skin types (but having a balanced skincare routine is still important). Lucky you :)!')
+    st.write('Normal skin type is neither dry or oily and pertains to a well balanced skin type. That means you won\'t run into many issues like other skin types (but having a balanced skincare routine is still important).')
 elif skin_type == 'Combination':
     st.write('Combination skin type comes with **both oily and dry parts around your skin**. The T-zone is typically known to be oily (the forhead, nose,and chin), while the cheek area is either dry or normal. If your skin feels oily in some parts while not in others, your might have combination skin type.')
 elif skin_type == 'Oily':
