@@ -56,23 +56,25 @@ curr_ingreds = st.text_input(
     'Enter your ingredients in comma-seperated format:')
 
 # if t
-curr_ingreds = curr_ingreds.lower().replace(' ', '').split(",")
+curr_ingreds = pd.Series(curr_ingreds.lower().split(", "))
 
 found_count = 0
 found = np.array([])
 not_found = np.array([])
-
+#st.write('hydroxyethylacrylate/sodiumacryloyldimethyltaurate' in ingredients['ingredient'].unique())
 # breakdown on what ingredients were found and which were not
+
+    
+#st.write((ingredients['other_names'].str.split(', ').fillna('False')).apply(lambda x: 'aqua' in x))
 for ingredient in curr_ingreds:
     found_base = ingredient in ingredients['ingredient'].unique()
-    found_alt = (ingredients['other_names'] == ingredient).fillna(False)
-    
-    if found_base:
-        found = np.append(found, ingredient)
-        found_count += 1
-    elif any(found_alt):
-        found = np.append(
-            found, ingredients[found_alt]['ingredient'].iloc[0])
+    found_alt = (ingredients['other_names'].str.split(', ').fillna('False')).apply(lambda x: ingredient in x)
+    if (found_base or any(found_alt)):
+        if found_base:
+            found = np.append(found, ingredient)
+        else:
+            found = np.append(
+                found, ingredients[found_alt]['ingredient'].iloc[0] + ' **(also known as ' + ingredient + ')**')
         found_count += 1
     else:
         not_found = np.append(not_found, ingredient)
