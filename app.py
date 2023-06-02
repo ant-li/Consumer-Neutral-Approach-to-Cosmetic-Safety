@@ -150,7 +150,7 @@ if butt_1:
     else:
         st.write('##### How Does This Compare to Your Skin Type?')
         if skin_type == 'Normal':
-            st.write('Normal have known issues, however, look at benefits that could help your skion')
+            st.write('Normal skin doesn\'t have concrete known issues, however, look at benefits that could help your skin\'s needs.')
         if skin_type == 'Dry':
             # For dry skin, look for ingredients that promote **hydration** and **nourishment**.
             st.markdown('''Here\'s how these ingredients may affect dry skin:            
